@@ -2,6 +2,7 @@ const confirmBtn = document.getElementById('confirmBtn');
 const totalDisplay = document.getElementById('total')
 const cartSubtotal = document.getElementById('cartSubtotal')
 const menuDivs = document.querySelectorAll('.menu-div')
+const receipt = document.getElementById('receipt')
 
 let subtotal = 0;
 
@@ -177,8 +178,45 @@ confirmBtn.addEventListener('click', (e)=> {
 })
 
 // make receipt 
-const makeReceipt =()=> {
+const makeReceipt =(obj, el)=> {
+    const listItem = document.createElement('li')
+    listItem.classList.add('receipt-item', 'd-flex', 'justify-content-between')
 
+    const receiptChoice = document.createElement('span')
+    receiptChoice.classList.add('receipt-choice')
+    receiptChoice.innerText = obj.item 
+
+    const receiptQty = document.createElement('span')
+    receiptQty.classList.add('receipt-qty')
+    receiptQty.setAttribute('id', `qty${obj.id}`)
+    receiptQty.innerText = obj.qty
+    
+    const receiptPrice = document.createElement('span')
+    receiptPrice.classList.add('receipt-price')
+    receiptPrice.innerText = obj.price
+
+    const itemSubtotal = document.createElement('span')
+    itemSubtotal.classList.add('item-subtotal')
+    itemSubtotal.setAttribute('id', `subTotal${obj.id}`)
+    itemSubtotal.innerText = obj.itemTotal
+
+    listItem.appendChild(receiptChoice)
+    listItem.appendChild(receiptQty)
+    listItem.appendChild(receiptPrice)
+    listItem.appendChild(itemSubtotal)
+
+    el.appendChild(listItem)
+}
+
+const updateReceipt =(obj, qty, itemTotal)=> {
+    
+    const receiptQty = document.getElementById(`qty${obj.id}`)
+    receiptQty.innerText = qty 
+
+    const itemSubtotal = document.getElementById(`subTotal${obj.id}`)
+    itemSubtotal.innerText = itemTotal.toFixed(2)
+
+    console.log(receiptArray);
 }
 
 menuDivs.forEach(div => {
@@ -222,6 +260,7 @@ menuItems.forEach(item => {
         <button 
             class="btn btn-danger cart-btn" 
             id="Btn${item.id}" 
+            data-id="${item.id}"
             data-price="${item.price}" 
             data-qty="${item.qty}"
             data-item="${item.item}"
@@ -258,10 +297,12 @@ cartButtons.forEach(button => {
     const price = parseFloat(button.getAttribute('data-price'))
     let qty = parseFloat(button.getAttribute('data-qty'))
     const item = button.getAttribute('data-item')
+    const id = parseFloat(button.getAttribute('data-id'))
     button.addEventListener('click', ()=> {
         // console.log(button);
         qty+=1
         let itemObj = {
+            id: id,
             item: item,
             qty: qty,
             price: price,
@@ -270,18 +311,19 @@ cartButtons.forEach(button => {
         
         if (itemObj.qty == 1) {
             receiptArray = [...receiptArray, itemObj]
+            makeReceipt(itemObj, receipt)
         } else {
             for (let i = 0; i < receiptArray.length; i++) {
-                if (receiptArray[i].item == item) {
+                if (receiptArray[i].id == id) {
                     receiptArray[i].qty = itemObj.qty++
                     receiptArray[i].itemTotal = receiptArray[i].qty * price
+                    updateReceipt(receiptArray[i], receiptArray[i].qty, receiptArray[i].itemTotal)
                 }
             }
         }
 
         // spread operator => ...something
 
-        console.log(receiptArray);
 
         subtotal+=price
         cartSubtotal.innerText = subtotal.toFixed(2)
