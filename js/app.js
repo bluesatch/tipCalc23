@@ -5,6 +5,7 @@ const menuDivs = document.querySelectorAll('.menu-div')
 const receipt = document.getElementById('receipt')
 
 let subtotal = 0;
+let tax = .07;
 
 let receiptArray = []
 // grab the types 
@@ -166,16 +167,31 @@ let menuItems = [
 // confirm button
 confirmBtn.addEventListener('click', (e)=> {
     e.preventDefault()
+    getTotal()
+})
+
+const getTotal=()=> {
+    
     const subtotal = parseFloat(cartSubtotal.innerText)
     const tipAmt = parseFloat(document.getElementById('tipAmt').value) 
     const otherAmt = parseFloat(document.getElementById('otherAmt').value)
+    const yourTip = document.getElementById('yourTip')
+    const theSubtotal = document.getElementById('theSubtotal')
+    const taxDisplay = document.getElementById('tax')
 
-    let total;
+    let taxTotal = subtotal * tax;
 
-    isNaN(tipAmt) ? total = subtotal + otherAmt : total = (subtotal * tipAmt) + subtotal
-
+    
+    let receiptTip = isNaN(tipAmt) ? otherAmt : (subtotal * tipAmt)
+    
+    let total = isNaN(tipAmt) ? subtotal + otherAmt + taxTotal :
+        (subtotal * tipAmt) + subtotal + taxTotal
+        
+    theSubtotal.innerText = subtotal
+    taxDisplay.innerText = taxTotal.toFixed(2)
+    yourTip.innerText = receiptTip.toFixed(2)
     totalDisplay.innerText = total.toFixed(2)
-})
+}
 
 // make receipt 
 const makeReceipt =(obj, el)=> {
@@ -252,13 +268,13 @@ menuItems.forEach(item => {
     card.innerHTML = `
     <img src="images/${item.imgUrl}" alt="${item.desc}" class="img-fluid menu-image card-image-top" />
     <div class="card-body">
-        <h4 class="card-title">${item.item}</h4>
-        <p class="card-text">${item.desc}</p>
+        <h4 class="card-title text-capitalize item-item">${item.item}</h4>
+        <p class="card-text text-uppercase item-desc">${item.desc}</p>
     </div>
     <footer class="card-footer">
-        <p class="card-text item-price">${item.price}</p>
+        <p class="card-text item-price">$${item.price}</p>
         <button 
-            class="btn btn-danger cart-btn" 
+            class="btn btn-danger cart-btn text-capitalize" 
             id="Btn${item.id}" 
             data-id="${item.id}"
             data-price="${item.price}" 
@@ -299,36 +315,38 @@ cartButtons.forEach(button => {
     const item = button.getAttribute('data-item')
     const id = parseFloat(button.getAttribute('data-id'))
     button.addEventListener('click', ()=> {
-        // console.log(button);
-        qty+=1
-        let itemObj = {
-            id: id,
-            item: item,
-            qty: qty,
-            price: price,
-            itemTotal: qty * price
-        }
-        
-        if (itemObj.qty == 1) {
-            receiptArray = [...receiptArray, itemObj]
-            makeReceipt(itemObj, receipt)
-        } else {
-            for (let i = 0; i < receiptArray.length; i++) {
-                if (receiptArray[i].id == id) {
-                    receiptArray[i].qty = itemObj.qty++
-                    receiptArray[i].itemTotal = receiptArray[i].qty * price
-                    updateReceipt(receiptArray[i], receiptArray[i].qty, receiptArray[i].itemTotal)
-                }
-            }
-        }
-
-        // spread operator => ...something
-
-
-        subtotal+=price
-        cartSubtotal.innerText = subtotal.toFixed(2)
+        addItems(price, qty, item, id)
     })
 })
 
+const addItems =(price, qty, item, id)=> {
+      // console.log(button);
+    qty+=1
+    let itemObj = {
+        id: id,
+        item: item,
+        qty: qty,
+        price: price,
+        itemTotal: qty * price
+    }
+    if (itemObj.qty == 1) {
+        receiptArray = [...receiptArray, itemObj]
+        makeReceipt(itemObj, receipt)
+    } else {
+        for (let i = 0; i < receiptArray.length; i++) {
+            if (receiptArray[i].id == id) {
+                receiptArray[i].qty = itemObj.qty++
+                receiptArray[i].itemTotal = receiptArray[i].qty * price
+                updateReceipt(receiptArray[i], receiptArray[i].qty, receiptArray[i].itemTotal)
+            }
+        }
+    }
+
+    // spread operator => ...something
+
+
+    subtotal+=price
+    cartSubtotal.innerText = subtotal.toFixed(2)
+}
 
 

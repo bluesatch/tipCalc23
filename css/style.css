@@ -30,6 +30,19 @@ h2 {
     padding: 60px 0;
 }
 
+.item-desc {
+    font-size: 14px;
+    font-style: italic;
+}
+
+.item-item {
+    color: dodgerblue;
+}
+
+.item-price {
+    color: red;
+}
+
 .subtotal-div, .ticket-div {
     padding: 15px;
     background-color: whitesmoke;
