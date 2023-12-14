@@ -27,7 +27,7 @@ h2 {
 }
 
 .menu-div {
-    padding: 60px 0;
+    padding: 20px 0;
 }
 
 .item-desc {
@@ -48,6 +48,11 @@ h2 {
     background-color: whitesmoke;
     border: 3px solid dodgerblue;
     border-radius: 5px; 
+}
+
+#receiptTable {
+    padding: 10px 0;
+    width: 100%;
 }
 
 .footer {

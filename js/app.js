@@ -59,7 +59,7 @@ let menuItems = [
         type: 'entrees',
         item: 'chicken sandwich',
         desc: 'breaded chicken breast on a bun with pickles and lettuce',
-        imgUrl: '',
+        imgUrl: 'chicken_sandwich.jpeg',
         price: 12.99,
         qty: 0
     },
@@ -68,7 +68,7 @@ let menuItems = [
         type: 'entrees',
         item: 'veggie burger',
         desc: 'bean veggie patty served with fries',
-        imgUrl: '',
+        imgUrl: 'veggie_burger.jpeg',
         price: 12.99,
         qty: 0
     },
@@ -77,7 +77,7 @@ let menuItems = [
         type: 'entrees',
         item: 'salmon',
         desc: 'atlantic salmon served over grits with a side of spinach',
-        imgUrl: '',
+        imgUrl: 'salmon.jpeg',
         price: 15.99,
         qty: 0
     },
@@ -86,7 +86,7 @@ let menuItems = [
         type: 'entrees',
         item: 'pizza',
         desc: 'pepperoni and tomato pizza. 6 slices',
-        imgUrl: '',
+        imgUrl: 'pizza.jpeg',
         price: 16.99,
         qty: 0
     },
@@ -95,7 +95,7 @@ let menuItems = [
         type: 'drinks',
         item: 'lemonade',
         desc: 'fresh squeezed lemonade',
-        imgUrl: '',
+        imgUrl: 'lemonade.jpeg',
         price: 3.99,
         qty: 0
     },
@@ -104,7 +104,7 @@ let menuItems = [
         type: 'drinks',
         item: 'beer',
         desc: 'beer',
-        imgUrl: '',
+        imgUrl: 'beer.jpeg',
         price: 3.99,
         qty: 0
     },
@@ -113,7 +113,7 @@ let menuItems = [
         type: 'drinks',
         item: 'wine',
         desc: 'glass of wine',
-        imgUrl: '',
+        imgUrl: 'wine.jpeg',
         price: 7.99,
         qty: 0
     },
@@ -122,7 +122,7 @@ let menuItems = [
         type: 'drinks',
         item: 'sweet tea',
         desc: 'sweet tea',
-        imgUrl: '',
+        imgUrl: 'tea.jpeg',
         price: 4.99,
         qty: 0
     },
@@ -131,7 +131,7 @@ let menuItems = [
         type: 'desserts',
         item: 'tiramisu',
         desc: 'layered sponge cake',
-        imgUrl: '',
+        imgUrl: 'tiramisu.jpeg',
         price: 6.99,
         qty: 0
     },
@@ -140,7 +140,7 @@ let menuItems = [
         type: 'desserts',
         item: 'brownie',
         desc: 'chocolate brownie served with ice cream',
-        imgUrl: '',
+        imgUrl: 'brownies.jpeg',
         price: 7.99,
         qty: 0
     },
@@ -149,7 +149,7 @@ let menuItems = [
         type: 'desserts',
         item: 'chocolate chip cookies',
         desc: 'three chocolate chip cookies',
-        imgUrl: '',
+        imgUrl: 'cookies.jpeg',
         price: 5.99,
         qty: 0
     },
@@ -158,7 +158,7 @@ let menuItems = [
         type: 'desserts',
         item: 'apple pie',
         desc: 'slice of fresh store made apple pie',
-        imgUrl: '',
+        imgUrl: 'apple_pie.jpeg',
         price: 8.99,
         qty: 0
     }
@@ -185,7 +185,7 @@ const getTotal=()=> {
     let receiptTip = isNaN(tipAmt) ? otherAmt : (subtotal * tipAmt)
     
     let total = isNaN(tipAmt) ? subtotal + otherAmt + taxTotal :
-        (subtotal * tipAmt) + subtotal + taxTotal
+        receiptTip + subtotal + taxTotal
         
     theSubtotal.innerText = subtotal
     taxDisplay.innerText = taxTotal.toFixed(2)
@@ -195,33 +195,33 @@ const getTotal=()=> {
 
 // make receipt 
 const makeReceipt =(obj, el)=> {
-    const listItem = document.createElement('li')
-    listItem.classList.add('receipt-item', 'd-flex', 'justify-content-between')
+    const tableRow = document.createElement('tr')
+    tableRow.classList.add('receipt-item')
 
-    const receiptChoice = document.createElement('span')
-    receiptChoice.classList.add('receipt-choice')
+    const receiptChoice = document.createElement('td')
+    receiptChoice.classList.add('receipt-choice', 'text-center')
     receiptChoice.innerText = obj.item 
 
-    const receiptQty = document.createElement('span')
-    receiptQty.classList.add('receipt-qty')
+    const receiptQty = document.createElement('td')
+    receiptQty.classList.add('receipt-qty', 'text-center')
     receiptQty.setAttribute('id', `qty${obj.id}`)
     receiptQty.innerText = obj.qty
     
-    const receiptPrice = document.createElement('span')
-    receiptPrice.classList.add('receipt-price')
+    const receiptPrice = document.createElement('td')
+    receiptPrice.classList.add('receipt-price', 'text-center')
     receiptPrice.innerText = obj.price
 
-    const itemSubtotal = document.createElement('span')
-    itemSubtotal.classList.add('item-subtotal')
+    const itemSubtotal = document.createElement('td')
+    itemSubtotal.classList.add('item-subtotal', 'text-center')
     itemSubtotal.setAttribute('id', `subTotal${obj.id}`)
     itemSubtotal.innerText = obj.itemTotal
 
-    listItem.appendChild(receiptChoice)
-    listItem.appendChild(receiptQty)
-    listItem.appendChild(receiptPrice)
-    listItem.appendChild(itemSubtotal)
+    tableRow.appendChild(receiptChoice)
+    tableRow.appendChild(receiptQty)
+    tableRow.appendChild(receiptPrice)
+    tableRow.appendChild(itemSubtotal)
 
-    el.appendChild(listItem)
+    el.appendChild(tableRow)
 }
 
 const updateReceipt =(obj, qty, itemTotal)=> {
@@ -273,14 +273,31 @@ menuItems.forEach(item => {
     </div>
     <footer class="card-footer">
         <p class="card-text item-price">$${item.price}</p>
-        <button 
-            class="btn btn-danger cart-btn text-capitalize" 
-            id="Btn${item.id}" 
-            data-id="${item.id}"
-            data-price="${item.price}" 
-            data-qty="${item.qty}"
-            data-item="${item.item}"
-        >add to cart</button>
+        <div class="buttons-div d-flex justify-content-around">
+            <button 
+                class="btn btn-danger cart-btn text-capitalize" 
+                id="Btn${item.id}" 
+                data-id="${item.id}"
+                data-price="${item.price}" 
+                data-qty="${item.qty}"
+                data-item="${item.item}"
+            >add to cart</button>
+            <div class="qty-div">
+                <button 
+                    class="btn btn-primary btn-subtract" 
+                    id="btnSubtract${item.id}"
+                    data-id="${item.id}"
+                    data-qty="${item.qty}"
+                > - </button>
+                <span class="quantity" id="quantity${item.id}">${item.qty}</span>
+                <button 
+                    class="btn btn-primary btn-add" 
+                    id="btnAdd${item.id}"
+                    data-id="${item.id}"
+                    data-qty="${item.qty}"
+                > + </button>
+            </div>
+        </div>
     </footer>
     `
     column.appendChild(card);
@@ -311,42 +328,72 @@ const cartButtons = document.querySelectorAll('.cart-btn')
 cartButtons.forEach(button => {
 
     const price = parseFloat(button.getAttribute('data-price'))
-    let qty = parseFloat(button.getAttribute('data-qty'))
     const item = button.getAttribute('data-item')
     const id = parseFloat(button.getAttribute('data-id'))
+    
     button.addEventListener('click', ()=> {
-        addItems(price, qty, item, id)
+        let qty;
+        for (let i = 0; i < menuItems.length; i++) {
+            menuItems[i].id == id ? qty = menuItems[i].qty : null
+        }
+        addItems(price, qty, item, id)    
     })
 })
 
 const addItems =(price, qty, item, id)=> {
-      // console.log(button);
-    qty+=1
+    
     let itemObj = {
-        id: id,
-        item: item,
-        qty: qty,
-        price: price,
+        id,
+        item,
+        qty,
+        price,
         itemTotal: qty * price
     }
-    if (itemObj.qty == 1) {
-        receiptArray = [...receiptArray, itemObj]
-        makeReceipt(itemObj, receipt)
-    } else {
-        for (let i = 0; i < receiptArray.length; i++) {
-            if (receiptArray[i].id == id) {
-                receiptArray[i].qty = itemObj.qty++
-                receiptArray[i].itemTotal = receiptArray[i].qty * price
-                updateReceipt(receiptArray[i], receiptArray[i].qty, receiptArray[i].itemTotal)
+
+    receiptArray = [...receiptArray, itemObj]
+    makeReceipt(itemObj, receipt)
+
+
+    subtotal+= itemObj.itemTotal
+    cartSubtotal.innerText = subtotal.toFixed(2)
+    
+}
+
+const btnSubtract = document.querySelectorAll('.btn-subtract')
+const btnAdd = document.querySelectorAll('.btn-add')
+
+btnSubtract.forEach(button => {
+    button.addEventListener('click', ()=> {
+        // const btnQty = parseFloat(button.getAttribute('data-qty'))
+        const btnId = parseFloat(button.getAttribute('data-id'))
+        const spanQty = document.getElementById(`quantity${btnId}`)
+        
+        for (let i = 0; i < menuItems.length; i++) {
+            if(menuItems[i].id == btnId && menuItems[i].qty > 0) {
+                menuItems[i].qty-=1
+                spanQty.innerText = menuItems[i].qty
             }
         }
-    }
+    })
+})
 
-    // spread operator => ...something
+btnAdd.forEach(button => {
 
-
-    subtotal+=price
-    cartSubtotal.innerText = subtotal.toFixed(2)
-}
+    button.addEventListener('click', ()=> {
+        // const btnQty = parseFloat(button.getAttribute('data-qty'))
+        const btnId = parseFloat(button.getAttribute('data-id'))
+        const spanQty = document.getElementById(`quantity${btnId}`)
+        
+        for (let i = 0; i < menuItems.length; i++) {
+            if(menuItems[i].id == btnId 
+                && menuItems[i].qty < 20 
+                && cartButtons[i].dataset.id == btnId) {
+                menuItems[i].qty+=1
+                cartButtons[i].setAttribute('data-qty', menuItems[i].qty) 
+                spanQty.innerText = menuItems[i].qty
+            }
+        }
+    })
+})
 
 
